@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de NF-e</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Calculadora de NF-e - Arraste e Solte ZIPs</h1>
+
+    <div id="drop-area">
+        <form class="my-form">
+            <p>Arraste os arquivos ZIP aqui ou clique para selecionar</p><br>
+            <input type="file" id="fileElem" multiple accept=".zip">
+            <label class="button" for="fileElem">Selecionar Arquivos</label>
+        </form>
+    </div>
+
+    <button id="uploadBtn">Calcular Total</button>
+    <h2 id="resultado"></h2>
+
+    <script>
+        let files = [];
+        const fileElem = document.getElementById("fileElem");
+        const dropArea = document.getElementById("drop-area");
+
+        fileElem.addEventListener("change", (e) => {
+            files = e.target.files;
+        });
+
+        dropArea.addEventListener("dragover", (e) => {
+            e.preventDefault();
+        });
+
+        dropArea.addEventListener("drop", (e) => {
+            e.preventDefault();
+            files = e.dataTransfer.files;
+        });
+
+        document.getElementById("uploadBtn").addEventListener("click", () => {
+            if (files.length === 0) {
+                alert("Selecione pelo menos um arquivo!");
+                return;
+            }
+
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append("files[]", files[i]);
+            }
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("resultado").innerText = "Valor total: R$ " + data.total;
+            });
+        });
+    </script>
+</body>
+</html>
