@@ -3,38 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Calculadora de NF-e</title>
+    <!-- Use apenas um link para o CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <h1>Calculadora de NF-e - Arraste e Solte ZIPs</h1>
+    <div>
+        <div id="drop-area">
+            <form class="my-form">
+                <p>Clique para selecionar os arquivos</p><br>
+                <input type="file" id="fileElem" multiple accept=".zip">
+            </form>
+        </div>
 
-    <div id="drop-area">
-        <form class="my-form">
-            <p>Arraste os arquivos ZIP aqui ou clique para selecionar</p><br>
-            <input type="file" id="fileElem" multiple accept=".zip">
-            <label class="button" for="fileElem">Selecionar Arquivos</label>
-        </form>
+        <div class="result">
+            <button id="uploadBtn" type="button">Calcular Total</button>
+            <h2 id="resultado"></h2>
+        </div>
     </div>
-
-    <button id="uploadBtn">Calcular Total</button>
-    <h2 id="resultado"></h2>
 
     <script>
         let files = [];
         const fileElem = document.getElementById("fileElem");
-        const dropArea = document.getElementById("drop-area");
+        const resultado = document.getElementById("resultado");
 
+        // Atualiza o array de arquivos quando o usuário seleciona
         fileElem.addEventListener("change", (e) => {
-            files = e.target.files;
-        });
-
-        dropArea.addEventListener("dragover", (e) => {
-            e.preventDefault();
-        });
-
-        dropArea.addEventListener("drop", (e) => {
-            e.preventDefault();
-            files = e.dataTransfer.files;
+            files = Array.from(e.target.files);
         });
 
         document.getElementById("uploadBtn").addEventListener("click", () => {
@@ -54,7 +49,12 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById("resultado").innerText = "Valor total: R$ " + data.total;
+                resultado.style.display = "block";
+                resultado.innerText = "Valor total: R$ " + data.total;
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Ocorreu um erro ao calcular o total.");
             });
         });
     </script>
