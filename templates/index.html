@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <div>
         <div id="drop-area">
             <form class="my-form">
                 <p>Clique para selecionar os arquivos</p><br>
@@ -16,11 +15,8 @@
             </form>
         </div>
 
-        <div class="result">
             <button id="uploadBtn" type="button">Calcular Total</button>
             <h2 id="resultado"></h2>
-        </div>
-    </div>
 
     <script>
         let files = [];
@@ -49,7 +45,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                resultado.style.display = "block";
                 resultado.innerText = "Valor total: R$ " + data.total;
             })
             .catch(err => {
